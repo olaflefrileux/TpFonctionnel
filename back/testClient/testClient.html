@@ -1,0 +1,38 @@
+<script>
+    const pathPrefix = "http://localhost:8081/"
+    const xhr = new XMLHttpRequest();
+
+
+    function list() {
+        const url = pathPrefix + "morpion/list";
+        xhr.open("GET", url);
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4) {
+                addText(xhr.response);
+            }
+        }
+    }
+
+    function create() {
+    const url = pathPrefix + "morpion/create";
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            addText(xhr.response);
+        };
+        xhr.send();
+    }
+
+    function addText(event) {
+        document.getElementById("alltext").value += event += "\n";
+    }
+</script>
+
+<br>
+<button id="list" onClick="list()">list</button>
+<br>
+<button id="create" onClick="create()">create</button>
+<br><hr><br>
+
+<textarea id="alltext" style="position: absolute;bottom: 10px;width: 80%;height: 20%;" readonly="true"></textarea>
