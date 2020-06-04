@@ -3,7 +3,7 @@ import { Path, POST, GET, PathParam } from 'typescript-rest';
 import { morpionService } from './morpionService';
 
 export interface Play {
-    id: number, player: string, x: number, y: number
+    id: string, playerTurn: string, x: number, y: number
 }
 
 @Path('morpion')
@@ -18,7 +18,8 @@ export class MorpionRest {
     @Path('play')
     @POST
     play(body: Play) {
-        return morpionService.play(body.id, body.player, body.x, body.y);
+        console.log(':/play')
+        return morpionService.play(Number(body.id), body.playerTurn, body.x, body.y);
     }
 
     @Path('reset')
@@ -30,6 +31,7 @@ export class MorpionRest {
     @Path('grid/:id')
     @GET
     getGrid( @PathParam('id') id: number) {
+        console.log(':/grid')
         return morpionService.getGrid(id);
     }
 }
