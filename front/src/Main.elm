@@ -63,6 +63,23 @@ type Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = 
+  case msg of
+    AddShape position ->
+      ( model, playerChoice model position )
+    NewGame ->
+      ( initModel "", getGame )
+    GetGame res ->
+      case res of
+        Ok id ->
+          ( initModel id, Cmd.none )
+    PlayerChoice res ->
+      case res of
+        Ok status ->
+          ( updateStatus model status, getGrid model)
+    GetGrid res ->
+      case res of
+        Ok grid ->
+          ( updateGrid model grid |> updatePlayerTurn, Cmd.none)
       
 
 {- Api -}
@@ -141,10 +158,33 @@ stateToString value =
 returnPosition x y =
   { x = String.toInt x, y = String.toInt y } -}
 
+initModel : String -> Model
+initModel id =
+  { 
+    id = id,
+    grid = [ 
+      [ Clear, Clear, Clear],
+      [ Clear, Clear, Clear],
+      [ Clear, Clear, Clear]
+    ],
+    turn = Circle,
+    status = ""
+  }
 
+updateStatus : Model -> String -> Model
+updateStatus model status = 
+  { model | status = status }
 
-
+updateGrid : Model -> List (List State) -> Model
+updateGrid model grid =
+ { model | grid = grid }
 
 updatePlayerTurn : Model -> String -> Model
+updatePlayerTurn model =
+  case model.playerTurn of
+  Cross -> { model | playerTurn = Circle }
+  _ -> { model | playerTurn = Cross }
+
+{- View -}
 
 
