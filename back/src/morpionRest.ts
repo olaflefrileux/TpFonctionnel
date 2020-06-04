@@ -2,6 +2,10 @@ import 'typescript-rest';
 import { Path, POST, GET, PathParam } from 'typescript-rest';
 import { morpionService } from './morpionService';
 
+export interface Play {
+    id: number, player: string, cell: number
+}
+
 @Path('morpion')
 export class MorpionRest {
     @Path('create')
@@ -13,8 +17,8 @@ export class MorpionRest {
 
     @Path('play')
     @POST
-    play(id: number, player: string, cell: number) {
-        return morpionService.play(id, player, cell);
+    play(body: Play) {
+        return morpionService.play(body.id, body.player, body.cell);
     }
 
     @Path('reset')
