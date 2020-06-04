@@ -5,20 +5,16 @@ class MorpionService {
         console.log('MorpionService instantiated');
     }
 
-    public getGameList() {
-        return morpionHandler.getGamesList();
-    }
-
-    public createGame() {
+    public createGame(): number {
         return morpionHandler.createGame();
     }
 
-    public joinGame(gameId: number) {
-        return morpionHandler.joinGame(gameId);
+    public play(gameId: number, player: string, cell: number) {
+        return morpionHandler.play(gameId, player, cell);
     }
 
-    public play(gameId: number, cell: number) {
-        return morpionHandler.play(gameId, cell);
+    public getGrid(id: number) {
+        return morpionHandler.getGrid(id);
     }
 }
 

@@ -1,16 +1,9 @@
 import 'typescript-rest';
-import { Path, POST, GET } from 'typescript-rest';
+import { Path, POST, GET, PathParam } from 'typescript-rest';
 import { morpionService } from './morpionService';
 
 @Path('morpion')
 export class MorpionRest {
-    @Path('list')
-    @GET
-    getList() {
-        console.log(':/list')
-        return morpionService.getGameList();
-    }
-
     @Path('create')
     @POST
     createGame() {
@@ -18,22 +11,21 @@ export class MorpionRest {
         return morpionService.createGame();
     }
 
-    @Path('join')
-    @POST
-    joinGame() {
-        console.log(':/join')
-      //  return morpionService.joinGame();
-    }
-
     @Path('play')
     @POST
-    play(cell: number) {
-        return morpionService.play(0, cell);
+    play(id: number, player: string, cell: number) {
+        return morpionService.play(id, player, cell);
     }
 
     @Path('reset')
     @POST
     resetGame() {
 
+    }
+
+    @Path('grid/:id')
+    @GET
+    getGrid( @PathParam('id') id: number) {
+        return morpionService.getGrid(id);
     }
 }

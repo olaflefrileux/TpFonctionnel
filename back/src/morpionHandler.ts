@@ -7,11 +7,9 @@ class MorpionHandler {
         this.games = new Array<Party>();
     }
 
-    public createGame() {
+    public createGame(): number {
         const o = {
             id: this.getRandomNumber(),
-            playerOnePass: this.getRandomNumber(),
-            playerTwoPass: this.getRandomNumber(),
             grid: new Array<CellState>(),
             isFinished: false
         };
@@ -19,82 +17,85 @@ class MorpionHandler {
             o.grid[x] = CellState.EMPTY;
         }
         this.games.push(o);
-        return Promise.resolve(3);
+        return o.id;
     }
 
     public getRandomNumber(): number {
         return Math.floor(Math.random() * Math.floor(10000));
     }
 
-    public getGamesList() {
-        return Promise.resolve(this.games.length);
-    }
-
-    public joinGame(gameId: number) {
-        return new Promise((resolve, reject) => {
-            const game = this.games.find(game => game.id === gameId);
-            game !== undefined ? resolve(game.playerTwoPass) : reject();
-        })
-    }
-
-    public play(gameId: number, cell: number) {
+    public play(gameId: number, player: string, cell: number): CellState {
         const game = this.games.find(game => game.id === gameId);
 
         if (game === undefined || game.isFinished) {
-            return;
+            return CellState.EMPTY;
         }
 
-        if (this.isAvailable(game, cell)) {
+        if (this.isAvailable(game, player, cell)) {
             const winner = this.checkWinner(game);
-            if (winner !== -1) {
+            if (winner !== CellState.EMPTY) {
                 game.isFinished = true;
-                // send event winner
-                return winner;
             }
+            return winner;
         }
+        return CellState.EMPTY;
     }
 
-    isAvailable(game: Party, cell: number): boolean {
+    isAvailable(game: Party, player: string, cell: number): boolean {
         if (game.grid[cell] !== CellState.EMPTY) {
-            game.grid[cell] = CellState.CIRCLE
+            game.grid[cell] = player === 'Cross' ? CellState.CROSS : CellState.CIRCLE;
             return true;
         } else {
             return false;
         }
     }
 
-    checkWinner(game: Party): number {
+    checkWinner(game: Party): CellState {
             for (let x = 0; x < 3; x++) {
                 if (game.grid[x] === game.grid[x + 3] && game.grid[x + 3] === game.grid[x + 6]) {
                     if (game.grid[x] === CellState.CIRCLE) {
-                        return game.playerOnePass;
+                        return CellState.CIRCLE;
                     } else if (game.grid[x] === CellState.CROSS) {
-                        return game.playerTwoPass;
+                        return CellState.CROSS;
                     }
                 }
                 if (game.grid[x] === game.grid[x + 1] && game.grid[x + 1] === game.grid[x + 2]) {
                     if (game.grid[x] === CellState.CIRCLE) {
-                        return game.playerOnePass;
+                        return CellState.CIRCLE;
                     } else if (game.grid[x] === CellState.CROSS) {
-                        return game.playerTwoPass;
+                        return CellState.CROSS;
                     }
                 }
             }
             if (game.grid[0] === game.grid[4] && game.grid[4] === game.grid[8]) {
                 if (game.grid[0] === CellState.CIRCLE) {
-                    return game.playerOnePass;
+                    return CellState.CIRCLE;
                 } else if (game.grid[0] === CellState.CROSS) {
-                    return game.playerTwoPass;
+                    return CellState.CROSS;
                 }
             }
             if (game.grid[2] === game.grid[4] && game.grid[4] === game.grid[6]) {
                 if (game.grid[2] === CellState.CIRCLE) {
-                    return game.playerOnePass;
+                    return CellState.CIRCLE;
                 } else if (game.grid[2] === CellState.CROSS) {
-                    return game.playerTwoPass;
+                    return CellState.CROSS;
                 }
             }
-        return -1;
+        return CellState.EMPTY;
+    }
+
+    public getGrid(id: number) {
+        const game = this.games.find(game => game.id === id);
+
+        if (game === undefined) {
+            return;
+        }
+
+        return [ 
+            [ game.grid[0], game.grid[1], game.grid[2] ],
+            [ game.grid[3], game.grid[4], game.grid[5] ],
+            [ game.grid[6], game.grid[7], game.grid[8] ]
+        ];
     }
 }
 export const morpionHandler = new MorpionHandler();
