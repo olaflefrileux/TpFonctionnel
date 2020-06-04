@@ -25,7 +25,8 @@ type alias Model =
     id: String,
     grid: List (List State),
     playerTurn: State,
-    status: String
+    status: String,
+    error: String
   }
 
 {- Init -}
@@ -48,14 +49,15 @@ type State
   | Cross
   | Circle
 
-type alias Position = 
+{- type alias Position = 
   {
    x: Int, 
    y: Int
-  }
+  } 
+-}
 
 type Msg
-  = AddShape Position
+  = AddShape Int
   | NewGame
   | GetGame (Result Http.Error String)
   | PlayerChoice (Result Http.Error String)
@@ -72,14 +74,20 @@ update msg model =
       case res of
         Ok id ->
           ( initModel id, Cmd.none )
+        Err _ ->
+          (updateError model "GetGame", Cmd.none)
     PlayerChoice res ->
       case res of
         Ok status ->
           ( updateStatus model status, getGrid model)
+        Err _ ->
+          (updateError model "PlayerChoice", Cmd.none)
     GetGrid res ->
       case res of
         Ok grid ->
           ( updateGrid model grid |> updatePlayerTurn, Cmd.none)
+        Err _ ->
+          (updateError model "GetGrid", Cmd.none)
       
 
 {- Api -}
@@ -97,18 +105,17 @@ getGameDecoder : Decoder String
 getGameDecoder = 
   field "id" string
 
-playerChoice : Model -> Position -> Cmd Msg
+playerChoice : Model -> Int -> Cmd Msg
 playerChoice model position = 
   Http.post
   {
-    url = baseUrl ++ "play/",
+    url = baseUrl ++ "play",
     body = Http.jsonBody <|
       E.object
         [
           ( "id", E.string model.id ),
-          ( "playerTurn", E.string stateToString model.playerTurn ),
-          ( "x" E.int position.x),
-          ( "y" E.int position.y)
+          ( "playerTurn", E.string (stateToString model.playerTurn) ),
+          ( "position", E.int position)
         ],
     expect = Http.expectJson PlayerChoice playerChoiceDecoder
   }
@@ -121,7 +128,7 @@ getGrid : Model -> Cmd Msg
 getGrid model = 
   Http.get 
   { 
-    url = baseUrl ++  model.id,
+    url = baseUrl ++ "grid/" ++  model.id,
     expect = Http.expectJson GetGrid getGridDecoder
   }
 getGridDecoder : Decoder (List (List State))
@@ -139,10 +146,12 @@ stateDecoder =
                   D.succeed Cross
                 "Circle" ->
                   D.succeed Circle
+                _ ->
+                  D.fail <| "Trying to decode info, but version "
         )
 {- Helper -}
 
-baseUrl = "/morpion/"
+baseUrl = "http://localhost:8081/morpion/"
 
 stateToString : State -> String
 stateToString value = 
@@ -167,19 +176,24 @@ initModel id =
       [ Clear, Clear, Clear],
       [ Clear, Clear, Clear]
     ],
-    turn = Circle,
-    status = ""
+    playerTurn = Circle,
+    status = "",
+    error = ""
   }
 
 updateStatus : Model -> String -> Model
 updateStatus model status = 
   { model | status = status }
 
+updateError : Model -> String -> Model
+updateError model error = 
+  { model | error = error }
+
 updateGrid : Model -> List (List State) -> Model
 updateGrid model grid =
  { model | grid = grid }
 
-updatePlayerTurn : Model -> String -> Model
+updatePlayerTurn : Model -> Model
 updatePlayerTurn model =
   case model.playerTurn of
   Cross -> { model | playerTurn = Circle }
@@ -187,4 +201,15 @@ updatePlayerTurn model =
 
 {- View -}
 
+view: Model -> Html Msg
+view model = 
+  div []
+    [
+      h1 [] [text "El Morpionne"],
+      button [onClick NewGame] [text "Nouvelle partie"],
+      div [class "game"]
+      [
+
+      ]
+    ]
 
