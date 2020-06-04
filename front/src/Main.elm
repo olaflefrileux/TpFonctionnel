@@ -49,15 +49,15 @@ type State
   | Cross
   | Circle
 
-{- type alias Position = 
+type alias Position = 
   {
    x: Int, 
    y: Int
   } 
--}
+
 
 type Msg
-  = AddShape Int
+  = AddShape Position
   | NewGame
   | GetGame (Result Http.Error String)
   | PlayerChoice (Result Http.Error String)
@@ -105,7 +105,7 @@ getGameDecoder : Decoder String
 getGameDecoder = 
   field "id" string
 
-playerChoice : Model -> Int -> Cmd Msg
+playerChoice : Model -> Position -> Cmd Msg
 playerChoice model position = 
   Http.post
   {
@@ -115,7 +115,8 @@ playerChoice model position =
         [
           ( "id", E.string model.id ),
           ( "playerTurn", E.string (stateToString model.playerTurn) ),
-          ( "position", E.int position)
+          ( "x", E.int position.x),
+          ( "y", E.int position.y)
         ],
     expect = Http.expectJson PlayerChoice playerChoiceDecoder
   }
@@ -163,9 +164,9 @@ stateToString value =
     Circle ->
       "Circle"
 
-{- returnPosition : String -> String -> Position
+returnPosition : Int -> Int -> Position
 returnPosition x y =
-  { x = String.toInt x, y = String.toInt y } -}
+  { x = x, y = y }
 
 initModel : String -> Model
 initModel id =
@@ -201,15 +202,18 @@ updatePlayerTurn model =
 
 {- View -}
 
+rowItem: String -> Html Msg
+rowItem id =
+    div []
+        [ text id ]
+
 view: Model -> Html Msg
 view model = 
-  div []
+  div [ class "container"]
     [
-      h1 [] [text "El Morpionne"],
-      button [onClick NewGame] [text "Nouvelle partie"],
+      h1 [class "title"] [text "Tic Tac Toe"],
+      button [ class "button",  onClick NewGame] [text "Nouvelle partie"],
       div [class "game"]
-      [
-
-      ]
+      (List.indexedMap (\y elm -> div [ class "row"] (List.indexedMap(\x el -> div [classList [("cell", True), (stateToString el, True)], onClick (AddShape (returnPosition x y) )] [ span [][]]) elm)) model.grid)
     ]
 
