@@ -9,8 +9,8 @@ class MorpionService {
         return morpionHandler.createGame();
     }
 
-    public play(gameId: number, player: string, cell: number) {
-        return morpionHandler.play(gameId, player, cell);
+    public play(gameId: number, player: string, x: number, y: number) {
+        return morpionHandler.play(gameId, player, (y * 3 + x));
     }
 
     public getGrid(id: number) {
