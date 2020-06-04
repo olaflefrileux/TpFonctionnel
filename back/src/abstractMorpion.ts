@@ -9,3 +9,7 @@ export enum CellState {
     CROSS = "Cross",
     CIRCLE = "Circle"
 }
+
+export interface PartyStatus {
+    "status": CellState
+}

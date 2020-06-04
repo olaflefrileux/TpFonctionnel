@@ -1,4 +1,4 @@
-import { Party, CellState } from "./abstractMorpion";
+import { Party, CellState, PartyStatus } from "./abstractMorpion";
 
 class MorpionHandler {
     private games: Array<Party>;
@@ -17,18 +17,18 @@ class MorpionHandler {
             o.grid[x] = CellState.EMPTY;
         }
         this.games.push(o);
-        return {id: o.id};
+        return { "id": o.id };
     }
 
     public getRandomNumber(): number {
         return Math.floor(Math.random() * Math.floor(10000));
     }
 
-    public play(gameId: number, player: string, cell: number): CellState {
+    public play(gameId: number, player: string, cell: number): PartyStatus {
         const game = this.games.find(game => game.id === gameId);
 
         if (game === undefined || game.isFinished) {
-            return CellState.EMPTY;
+            return { "status": CellState.EMPTY };
         }
 
         if (this.isAvailable(game, player, cell)) {
@@ -36,9 +36,9 @@ class MorpionHandler {
             if (winner !== CellState.EMPTY) {
                 game.isFinished = true;
             }
-            return winner;
+            return { "status": winner};
         }
-        return CellState.EMPTY;
+        return { "status": CellState.EMPTY};
     }
 
     isAvailable(game: Party, player: string, cell: number): boolean {
@@ -91,11 +91,11 @@ class MorpionHandler {
             return;
         }
 
-        return [ 
+        return { "grid": [ 
             [ game.grid[0], game.grid[1], game.grid[2] ],
             [ game.grid[3], game.grid[4], game.grid[5] ],
             [ game.grid[6], game.grid[7], game.grid[8] ]
-        ];
+        ] };
     }
 }
 export const morpionHandler = new MorpionHandler();
