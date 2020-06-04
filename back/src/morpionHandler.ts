@@ -7,7 +7,7 @@ class MorpionHandler {
         this.games = new Array<Party>();
     }
 
-    public createGame(): number {
+    public createGame() {
         const o = {
             id: this.getRandomNumber(),
             grid: new Array<CellState>(),
@@ -17,7 +17,7 @@ class MorpionHandler {
             o.grid[x] = CellState.EMPTY;
         }
         this.games.push(o);
-        return o.id;
+        return {id: o.id};
     }
 
     public getRandomNumber(): number {

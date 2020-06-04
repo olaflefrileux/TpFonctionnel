@@ -5,7 +5,7 @@ class MorpionService {
         console.log('MorpionService instantiated');
     }
 
-    public createGame(): number {
+    public createGame() {
         return morpionHandler.createGame();
     }
 
