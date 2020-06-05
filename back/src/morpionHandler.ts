@@ -14,10 +14,10 @@ class MorpionHandler {
             isFinished: false
         };
         for (let x = 0; x < 9; x++) {
-            o.grid[x] = CellState.EMPTY;
+            o.grid[x] = CellState.CLEAR;
         }
         this.games.push(o);
-        return { "id": o.id };
+        return { "id": o.id.toString() };
     }
 
     public getRandomNumber(): number {
@@ -42,7 +42,7 @@ class MorpionHandler {
     }
 
     isAvailable(game: Party, player: string, cell: number): boolean {
-        if (game.grid[cell] !== CellState.EMPTY) {
+        if (game.grid[cell] === CellState.CLEAR) {
             game.grid[cell] = player === 'Cross' ? CellState.CROSS : CellState.CIRCLE;
             return true;
         } else {
@@ -90,6 +90,8 @@ class MorpionHandler {
         if (game === undefined) {
             return;
         }
+
+        console.log(game)
 
         return { "grid": [ 
             [ game.grid[0], game.grid[1], game.grid[2] ],

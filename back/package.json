@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "tsc --p tsconfig.json",
-    "server": "node dist/main.js"
+    "server": "tsc --p tsconfig.json && node dist/main.js"
   },
   "author": "",
   "license": "ISC",

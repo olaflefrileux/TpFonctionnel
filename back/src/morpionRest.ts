@@ -15,11 +15,15 @@ export class MorpionRest {
         return morpionService.createGame();
     }
 
-    @Path('play')
+    @Path('play/:id/:playerTurn/:x/:y')
     @POST
-    play(body: Play) {
+    play( @PathParam('id') id: number, 
+          @PathParam('playerTurn') playerTurn: string,
+          @PathParam('x') x: number,
+          @PathParam('y') y: number,
+        ) {
         console.log(':/play')
-        return morpionService.play(Number(body.id), body.playerTurn, body.x, body.y);
+        return morpionService.play(id, playerTurn, x, y);
     }
 
     @Path('reset')

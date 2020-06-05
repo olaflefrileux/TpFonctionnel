@@ -5,9 +5,10 @@ export interface Party {
 }
 
 export enum CellState {
-    EMPTY = "Empty",
+    CLEAR = "Clear",
     CROSS = "Cross",
-    CIRCLE = "Circle"
+    CIRCLE = "Circle",
+    EMPTY = ""
 }
 
 export interface PartyStatus {
