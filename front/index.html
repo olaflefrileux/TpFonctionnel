@@ -5,7 +5,6 @@
   <title>Main</title>
   <style>body { padding: 0; margin: 0; }</style>
   <link rel="stylesheet" href="./assets/style.css">
-  <link rel="stylesheet" href="./assets/style.css">
 </head>
 
 <body>
@@ -6156,7 +6155,7 @@ var $author$project$Main$initModel = function (id) {
 };
 var $author$project$Main$init = function (start) {
 	return _Utils_Tuple2(
-		$author$project$Main$initModel(''),
+		$author$project$Main$initModel('-1'),
 		$author$project$Main$getGame);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -6207,26 +6206,6 @@ var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$PlayerChoice = function (a) {
 	return {$: 'PlayerChoice', a: a};
 };
-var $elm$json$Json$Encode$int = _Json_wrap;
-var $elm$http$Http$jsonBody = function (value) {
-	return A2(
-		_Http_pair,
-		'application/json',
-		A2($elm$json$Json$Encode$encode, 0, value));
-};
-var $elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			$elm$core$List$foldl,
-			F2(
-				function (_v0, obj) {
-					var k = _v0.a;
-					var v = _v0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
-};
 var $author$project$Main$playerChoiceDecoder = A2($elm$json$Json$Decode$field, 'status', $elm$json$Json$Decode$string);
 var $author$project$Main$stateToString = function (value) {
 	switch (value.$) {
@@ -6238,31 +6217,13 @@ var $author$project$Main$stateToString = function (value) {
 			return 'Circle';
 	}
 };
-var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Main$playerChoice = F2(
 	function (model, position) {
 		return $elm$http$Http$post(
 			{
-				body: $elm$http$Http$jsonBody(
-					$elm$json$Json$Encode$object(
-						_List_fromArray(
-							[
-								_Utils_Tuple2(
-								'id',
-								$elm$json$Json$Encode$string(model.id)),
-								_Utils_Tuple2(
-								'playerTurn',
-								$elm$json$Json$Encode$string(
-									$author$project$Main$stateToString(model.playerTurn))),
-								_Utils_Tuple2(
-								'x',
-								$elm$json$Json$Encode$int(position.x)),
-								_Utils_Tuple2(
-								'y',
-								$elm$json$Json$Encode$int(position.y))
-							]))),
+				body: $elm$http$Http$emptyBody,
 				expect: A2($elm$http$Http$expectJson, $author$project$Main$PlayerChoice, $author$project$Main$playerChoiceDecoder),
-				url: $author$project$Main$baseUrl + 'play'
+				url: $author$project$Main$baseUrl + ('play/' + (model.id + ('/' + ($author$project$Main$stateToString(model.playerTurn) + ('/' + ($elm$core$String$fromInt(position.x) + ('/' + $elm$core$String$fromInt(position.y))))))))
 			});
 	});
 var $author$project$Main$updateError = F2(
@@ -6272,10 +6233,10 @@ var $author$project$Main$updateError = F2(
 			{error: error});
 	});
 var $author$project$Main$updateGrid = F2(
-	function (model, grid) {
+	function (model, newGrid) {
 		return _Utils_update(
 			model,
-			{grid: grid});
+			{grid: newGrid});
 	});
 var $author$project$Main$updatePlayerTurn = function (model) {
 	var _v0 = model.playerTurn;
@@ -6351,6 +6312,7 @@ var $author$project$Main$AddShape = function (a) {
 };
 var $author$project$Main$NewGame = {$: 'NewGame'};
 var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
@@ -6438,7 +6400,24 @@ var $author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Nouvelle partie')
+						$elm$html$Html$text('Nouvelle Partie')
+					])),
+				A2(
+				$elm$html$Html$span,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$classList(
+						_List_fromArray(
+							[
+								_Utils_Tuple2('turn', true),
+								_Utils_Tuple2(
+								$author$project$Main$stateToString(model.playerTurn),
+								true)
+							]))
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('C\'est le tour de')
 					])),
 				A2(
 				$elm$html$Html$div,

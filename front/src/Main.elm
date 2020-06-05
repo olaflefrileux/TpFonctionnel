@@ -33,7 +33,7 @@ type alias Model =
 
 init : () -> (Model, Cmd Msg)
 init start = 
-  (initModel "", getGame)
+  (initModel "-1", getGame)
 
 
 {- Sub -}
@@ -72,8 +72,8 @@ update msg model =
       ( initModel "", getGame )
     GetGame res ->
       case res of
-        Ok id ->
-          ( initModel id, Cmd.none )
+        Ok id -> 
+          ( initModel id, Cmd.none)
         Err _ ->
           (updateError model "GetGame", Cmd.none)
     PlayerChoice res ->
@@ -92,6 +92,7 @@ update msg model =
 
 {- Api -}
 
+
 getGame : Cmd Msg
 getGame =
   Http.post
@@ -103,21 +104,14 @@ getGame =
 
 getGameDecoder : Decoder String
 getGameDecoder = 
-  field "id" string
+    field "id" string
 
 playerChoice : Model -> Position -> Cmd Msg
 playerChoice model position = 
   Http.post
   {
-    url = baseUrl ++ "play",
-    body = Http.jsonBody <|
-      E.object
-        [
-          ( "id", E.string model.id ),
-          ( "playerTurn", E.string (stateToString model.playerTurn) ),
-          ( "x", E.int position.x),
-          ( "y", E.int position.y)
-        ],
+    url = baseUrl ++ "play/" ++ model.id ++ "/" ++ stateToString model.playerTurn ++ "/" ++ String.fromInt position.x ++ "/" ++ String.fromInt position.y ,
+    body = Http.emptyBody,
     expect = Http.expectJson PlayerChoice playerChoiceDecoder
   }
 
@@ -191,8 +185,8 @@ updateError model error =
   { model | error = error }
 
 updateGrid : Model -> List (List State) -> Model
-updateGrid model grid =
- { model | grid = grid }
+updateGrid model newGrid =
+ { model | grid = newGrid }
 
 updatePlayerTurn : Model -> Model
 updatePlayerTurn model =
@@ -202,18 +196,14 @@ updatePlayerTurn model =
 
 {- View -}
 
-rowItem: String -> Html Msg
-rowItem id =
-    div []
-        [ text id ]
-
 view: Model -> Html Msg
 view model = 
   div [ class "container"]
     [
       h1 [class "title"] [text "Tic Tac Toe"],
-      button [ class "button",  onClick NewGame] [text "Nouvelle partie"],
+      button [ class "button",  onClick NewGame] [text "Nouvelle Partie"],
+      span [classList [("turn", True), (stateToString model.playerTurn, True)] ] [text "C'est le tour de"],
       div [class "game"]
-      (List.indexedMap (\y elm -> div [ class "row"] (List.indexedMap(\x el -> div [classList [("cell", True), (stateToString el, True)], onClick (AddShape (returnPosition x y) )] [ span [][]]) elm)) model.grid)
+      (List.indexedMap (\y elm -> div [ class "row"] (List.indexedMap(\x el -> div [ classList [("cell", True), (stateToString el, True)], onClick (AddShape (returnPosition x y) )] [ span [][]]) elm)) model.grid)
     ]
 
