@@ -194,6 +194,7 @@ updatePlayerTurn model =
   Cross -> { model | playerTurn = Circle }
   _ -> { model | playerTurn = Cross }
 
+
 {- View -}
 
 view: Model -> Html Msg
@@ -204,6 +205,10 @@ view model =
       button [ class "button",  onClick NewGame] [text "Nouvelle Partie"],
       span [classList [("turn", True), (stateToString model.playerTurn, True)] ] [text "C'est le tour de"],
       div [class "game"]
-      (List.indexedMap (\y elm -> div [ class "row"] (List.indexedMap(\x el -> div [ classList [("cell", True), (stateToString el, True)], onClick (AddShape (returnPosition x y) )] [ span [][]]) elm)) model.grid)
+      (List.indexedMap (\y elm -> div [ class "row"] (List.indexedMap(\x el -> div [ classList [("cell", True), (stateToString el, True)], onClick (AddShape (returnPosition x y) )] [ span [][]]) elm)) model.grid),
+      div [] 
+      [
+        h1 [class "winner"] [text ("Le Gagnant est " ++ model.status)]
+      ]
     ]
 
