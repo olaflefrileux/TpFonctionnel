@@ -6348,6 +6348,10 @@ var $elm$html$Html$Attributes$classList = function (classes) {
 };
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $author$project$Main$hasWinner = function (status) {
+	return status !== '';
+};
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6364,6 +6368,13 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		$elm$html$Html$Events$on,
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
+};
+var $author$project$Main$resultMsg = function (status) {
+	if (status === 'Tie') {
+		return 'Match Nul';
+	} else {
+		return status + ' est le Gagnant';
+	}
 };
 var $author$project$Main$returnPosition = F2(
 	function (x, y) {
@@ -6423,7 +6434,14 @@ var $author$project$Main$view = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('game')
+						$elm$html$Html$Attributes$classList(
+						_List_fromArray(
+							[
+								_Utils_Tuple2('game', true),
+								_Utils_Tuple2(
+								'end',
+								$author$project$Main$hasWinner(model.status))
+							]))
 					]),
 				A2(
 					$elm$core$List$indexedMap,
@@ -6465,18 +6483,54 @@ var $author$project$Main$view = function (model) {
 					model.grid)),
 				A2(
 				$elm$html$Html$div,
-				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$classList(
+						_List_fromArray(
+							[
+								_Utils_Tuple2('result', true),
+								_Utils_Tuple2(
+								'show',
+								$author$project$Main$hasWinner(model.status))
+							]))
+					]),
 				_List_fromArray(
 					[
 						A2(
 						$elm$html$Html$h1,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('winner')
+								$elm$html$Html$Attributes$classList(
+								_List_fromArray(
+									[
+										_Utils_Tuple2('winner', true),
+										_Utils_Tuple2(
+										'show',
+										$author$project$Main$hasWinner(model.status))
+									]))
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('Le Gagnant est ' + model.status)
+								$elm$html$Html$text(
+								$author$project$Main$resultMsg(model.status))
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$classList(
+								_List_fromArray(
+									[
+										_Utils_Tuple2('button_end', true),
+										_Utils_Tuple2(
+										'show',
+										$author$project$Main$hasWinner(model.status))
+									])),
+								$elm$html$Html$Events$onClick($author$project$Main$NewGame)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Nouvelle Partie')
 							]))
 					]))
 			]));

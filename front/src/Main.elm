@@ -194,6 +194,17 @@ updatePlayerTurn model =
   Cross -> { model | playerTurn = Circle }
   _ -> { model | playerTurn = Cross }
 
+resultMsg : String -> String
+resultMsg status =
+  case status of
+  "Tie" -> 
+    "Match Nul"
+  _ ->
+    ( status ++ " est le Gagnant")
+
+hasWinner : String -> Bool
+hasWinner status =
+  status /= ""
 
 {- View -}
 
@@ -204,11 +215,12 @@ view model =
       h1 [class "title"] [text "Tic Tac Toe"],
       button [ class "button",  onClick NewGame] [text "Nouvelle Partie"],
       span [classList [("turn", True), (stateToString model.playerTurn, True)] ] [text "C'est le tour de"],
-      div [class "game"]
+      div [classList [("game", True), ("end", hasWinner model.status)]]
       (List.indexedMap (\y elm -> div [ class "row"] (List.indexedMap(\x el -> div [ classList [("cell", True), (stateToString el, True)], onClick (AddShape (returnPosition x y) )] [ span [][]]) elm)) model.grid),
-      div [] 
+      div [classList [("result", True), ("show", hasWinner model.status)]] 
       [
-        h1 [class "winner"] [text ("Le Gagnant est " ++ model.status)]
+        h1 [classList [("winner", True), ("show", hasWinner model.status)]] [text (resultMsg model.status)],
+        button [ classList [("button_end", True), ("show", hasWinner model.status)], onClick NewGame] [text "Nouvelle Partie"]
       ]
     ]
 

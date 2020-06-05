@@ -5,13 +5,15 @@
     justify-content: center;
     align-items: center;
     font-family: 'Roboto';
+
+    position: relative;
 }
 
 .title {
     display: flex;
 }
 
-.button {
+.button, .button_end{
     width: 200px;
     height: 30px;
     border: none;
@@ -23,7 +25,7 @@
     transition: ease 0.2s
 }
 
-button:hover {
+button:hover, .button_end:hover {
     background: rgba(161, 161, 161, 1);
 }
 
@@ -37,6 +39,10 @@ button:hover {
 
     background: white;
 
+}
+
+.game.end {
+    pointer-events: none;
 }
 
 .turn {
@@ -113,4 +119,29 @@ button:hover {
     flex: 1;
 
     content:"";
+}
+
+.winner, .button_end {
+    opacity: 0;
+}
+
+.winner.show, .button_end.show {
+    opacity: 1;
+}
+
+.result.show {
+    position: absolute;
+    background: white;
+    box-shadow: 5px 10px 20px rgba(0,0,0, 0.6);
+    border-radius: 20px;
+    height: 150px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 5px;
+
+    z-index: 100;
 }
