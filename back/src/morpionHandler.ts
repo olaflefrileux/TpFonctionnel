@@ -62,6 +62,8 @@ class MorpionHandler {
                     return CellState.CROSS;
                 }
             }
+        }
+        for (let x = 0; x < 7; x += 3) {
             if (game.grid[x] === game.grid[x + 1] && game.grid[x + 1] === game.grid[x + 2]) {
                 if (game.grid[x] === CellState.CIRCLE) {
                     return CellState.CIRCLE;
