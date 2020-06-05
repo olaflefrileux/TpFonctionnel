@@ -1,0 +1,116 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto';
+}
+
+.title {
+    display: flex;
+}
+
+.button {
+    width: 200px;
+    height: 30px;
+    border: none;
+    border-radius: 10px;
+    margin-top: 30px;
+
+    background: rgba(161, 161, 161, 0.8);
+    color: white;
+    transition: ease 0.2s
+}
+
+button:hover {
+    background: rgba(161, 161, 161, 1);
+}
+
+.game {
+    display: flex;
+    margin-top: 30px;
+    flex-direction: column;
+
+    height: 500px;
+    width: 500px;
+
+    background: white;
+
+}
+
+.turn {
+    display: flex;
+    margin-top: 60px;
+    align-items: center;
+}
+
+.turn.Cross:after {
+    background-image: url('cross.png');
+    background-size: 50px 50px;
+    display: inline-block;
+    width: 50px; 
+    height: 50px;
+    content:"";
+
+    margin-left: 20px;
+}
+
+.turn.Circle:after {
+    background-image: url('circle.png');
+    background-size: 50px 50px;
+    display: inline-block;
+    width: 50px; 
+    height: 50px;
+    content:"";
+
+    margin-left: 20px;
+}
+
+.row {
+    display: flex;
+    height: 100%;
+}
+
+.cell {
+    display: flex;
+    flex: 1;
+    margin: 5px;
+    background: #78BEC5;
+    border-radius: 20px;
+
+}
+
+.cell.Circle, .cell.Cross {
+    pointer-events: none;
+}
+
+.Circle, .Cross {
+    display: flex;
+    flex: 1;
+
+}
+
+.Circle:after {
+    background-image: url('circle.png');
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    flex: 1;
+
+    content:"";
+}
+
+.Cross:after {
+    background-image: url('cross.png');
+    background-size: 75%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    flex: 1;
+
+    content:"";
+}
