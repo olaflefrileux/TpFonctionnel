@@ -11,7 +11,9 @@ class MorpionHandler {
         const o = {
             id: this.getRandomNumber(),
             grid: new Array<CellState>(),
-            isFinished: false
+            isFinished: false,
+            actions: 0
+            
         };
         for (let x = 0; x < 9; x++) {
             o.grid[x] = CellState.CLEAR;
@@ -32,6 +34,7 @@ class MorpionHandler {
         }
 
         if (this.isAvailable(game, player, cell)) {
+            game.actions += 1;
             const winner = this.checkWinner(game);
             if (winner !== CellState.EMPTY) {
                 game.isFinished = true;
@@ -51,36 +54,39 @@ class MorpionHandler {
     }
 
     checkWinner(game: Party): CellState {
-            for (let x = 0; x < 3; x++) {
-                if (game.grid[x] === game.grid[x + 3] && game.grid[x + 3] === game.grid[x + 6]) {
-                    if (game.grid[x] === CellState.CIRCLE) {
-                        return CellState.CIRCLE;
-                    } else if (game.grid[x] === CellState.CROSS) {
-                        return CellState.CROSS;
-                    }
-                }
-                if (game.grid[x] === game.grid[x + 1] && game.grid[x + 1] === game.grid[x + 2]) {
-                    if (game.grid[x] === CellState.CIRCLE) {
-                        return CellState.CIRCLE;
-                    } else if (game.grid[x] === CellState.CROSS) {
-                        return CellState.CROSS;
-                    }
-                }
-            }
-            if (game.grid[0] === game.grid[4] && game.grid[4] === game.grid[8]) {
-                if (game.grid[0] === CellState.CIRCLE) {
+        for (let x = 0; x < 3; x++) {
+            if (game.grid[x] === game.grid[x + 3] && game.grid[x + 3] === game.grid[x + 6]) {
+                if (game.grid[x] === CellState.CIRCLE) {
                     return CellState.CIRCLE;
-                } else if (game.grid[0] === CellState.CROSS) {
+                } else if (game.grid[x] === CellState.CROSS) {
                     return CellState.CROSS;
                 }
             }
-            if (game.grid[2] === game.grid[4] && game.grid[4] === game.grid[6]) {
-                if (game.grid[2] === CellState.CIRCLE) {
+            if (game.grid[x] === game.grid[x + 1] && game.grid[x + 1] === game.grid[x + 2]) {
+                if (game.grid[x] === CellState.CIRCLE) {
                     return CellState.CIRCLE;
-                } else if (game.grid[2] === CellState.CROSS) {
+                } else if (game.grid[x] === CellState.CROSS) {
                     return CellState.CROSS;
                 }
             }
+        }
+        if (game.grid[0] === game.grid[4] && game.grid[4] === game.grid[8]) {
+            if (game.grid[0] === CellState.CIRCLE) {
+                return CellState.CIRCLE;
+            } else if (game.grid[0] === CellState.CROSS) {
+                return CellState.CROSS;
+            }
+        }
+        if (game.grid[2] === game.grid[4] && game.grid[4] === game.grid[6]) {
+            if (game.grid[2] === CellState.CIRCLE) {
+                return CellState.CIRCLE;
+            } else if (game.grid[2] === CellState.CROSS) {
+                return CellState.CROSS;
+            }
+        }
+        if (game.actions >= 9) {
+            return CellState.TIE;
+        }
         return CellState.EMPTY;
     }
 
@@ -93,11 +99,13 @@ class MorpionHandler {
 
         console.log(game)
 
-        return { "grid": [ 
-            [ game.grid[0], game.grid[1], game.grid[2] ],
-            [ game.grid[3], game.grid[4], game.grid[5] ],
-            [ game.grid[6], game.grid[7], game.grid[8] ]
-        ] };
+        return {
+            "grid": [
+                [game.grid[0], game.grid[1], game.grid[2]],
+                [game.grid[3], game.grid[4], game.grid[5]],
+                [game.grid[6], game.grid[7], game.grid[8]]
+            ]
+        };
     }
 }
 export const morpionHandler = new MorpionHandler();

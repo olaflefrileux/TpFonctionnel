@@ -1,14 +1,16 @@
 export interface Party {
     id: number,
     grid: CellState[],
-    isFinished: boolean
+    isFinished: boolean,
+    actions: number
 }
 
 export enum CellState {
     CLEAR = "Clear",
     CROSS = "Cross",
     CIRCLE = "Circle",
-    EMPTY = ""
+    EMPTY = "",
+    TIE = "Tie"
 }
 
 export interface PartyStatus {
